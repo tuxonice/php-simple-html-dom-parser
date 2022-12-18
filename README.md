@@ -28,7 +28,7 @@ Usage
 -----
 
 ```php
-use Sunra\PhpSimple\HtmlDomParser;
+use Sunra\PhpSimple\HtmlDomParser\PhpSimple\HtmlDomParser;
 
 ...
 $dom = HtmlDomParser::str_get_html( $str );

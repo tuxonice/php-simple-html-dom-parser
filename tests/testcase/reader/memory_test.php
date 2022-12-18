@@ -1,6 +1,8 @@
 <?php
 // $Rev: 130 $
 // -----------------------------------------------------------------------------
+use PhpSimple\Constants;
+
 error_reporting(E_ALL);
 
 include_once('../../simple_html_dom_reader.php');
@@ -18,13 +20,13 @@ function stat_dom($dom) {
     $count_tag_end = 0;
     
     foreach($dom->nodes as $n) {
-        if ($n->nodetype==HDOM_TYPE_TEXT)
+        if ($n->nodetype== Constants::HDOM_TYPE_TEXT)
             ++$count_text;
-        if ($n->nodetype==HDOM_TYPE_COMMENT)
+        if ($n->nodetype== Constants::HDOM_TYPE_COMMENT)
             ++$count_comm;
-        if ($n->nodetype==HDOM_TYPE_ELEMENT)
+        if ($n->nodetype== Constants::HDOM_TYPE_ELEMENT)
             ++$count_elem;
-        if ($n->nodetype==HDOM_TYPE_ENDTAG)
+        if ($n->nodetype== Constants::HDOM_TYPE_ENDTAG)
             ++$count_tag_end;
     }
     
