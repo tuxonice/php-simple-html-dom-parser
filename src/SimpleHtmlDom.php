@@ -2,8 +2,6 @@
 
 namespace PhpSimple;
 
-use function PhpSimple\str_get_html;
-
 /**
  * simple html dom parser
  * Paperg - in the find routine: allow us to specify that we want case insensitive testing of the value of the selector.
@@ -57,7 +55,7 @@ class SimpleHtmlDom
         'option' => array('option' => 1),
     );
 
-    function __construct($str = null, $lowercase = true, $forceTagsClosed = true, $target_charset = Constants::DEFAULT_TARGET_CHARSET, $stripRN = true, $defaultBRText = Constants::DEFAULT_BR_TEXT, $defaultSpanText = Constants::DEFAULT_SPAN_TEXT)
+    public function __construct($str = null, $lowercase = true, $forceTagsClosed = true, $target_charset = Constants::DEFAULT_TARGET_CHARSET, $stripRN = true, $defaultBRText = Constants::DEFAULT_BR_TEXT, $defaultSpanText = Constants::DEFAULT_SPAN_TEXT)
     {
         if ($str) {
             if (preg_match("/^http:\/\//i", $str) || is_file($str)) {
@@ -73,42 +71,40 @@ class SimpleHtmlDom
         $this->_target_charset = $target_charset;
     }
 
-    function __destruct()
+    public function __destruct()
     {
         $this->clear();
     }
 
     // load html from string
-    function load($str, $lowercase = true, $stripRN = true, $defaultBRText = Constants::DEFAULT_BR_TEXT, $defaultSpanText = Constants::DEFAULT_SPAN_TEXT)
+    public function load($str, $lowercase = true, $stripRN = true, $defaultBRText = Constants::DEFAULT_BR_TEXT, $defaultSpanText = Constants::DEFAULT_SPAN_TEXT)
     {
-        global $debugObject;
-
         // prepare
         $this->prepare($str, $lowercase, $stripRN, $defaultBRText, $defaultSpanText);
         // strip out comments
-        $this->remove_noise("'<!--(.*?)-->'is");
+        $this->removeNoise("'<!--(.*?)-->'is");
         // strip out cdata
-        $this->remove_noise("'<!\[CDATA\[(.*?)\]\]>'is", true);
+        $this->removeNoise("'<!\[CDATA\[(.*?)\]\]>'is", true);
         // Per sourceforge http://sourceforge.net/tracker/?func=detail&aid=2949097&group_id=218559&atid=1044037
         // Script tags removal now preceeds style tag removal.
         // strip out <script> tags
-        $this->remove_noise("'<\s*script[^>]*[^/]>(.*?)<\s*/\s*script\s*>'is");
-        $this->remove_noise("'<\s*script\s*>(.*?)<\s*/\s*script\s*>'is");
+        $this->removeNoise("'<\s*script[^>]*[^/]>(.*?)<\s*/\s*script\s*>'is");
+        $this->removeNoise("'<\s*script\s*>(.*?)<\s*/\s*script\s*>'is");
         // strip out <style> tags
-        $this->remove_noise("'<\s*style[^>]*[^/]>(.*?)<\s*/\s*style\s*>'is");
-        $this->remove_noise("'<\s*style\s*>(.*?)<\s*/\s*style\s*>'is");
+        $this->removeNoise("'<\s*style[^>]*[^/]>(.*?)<\s*/\s*style\s*>'is");
+        $this->removeNoise("'<\s*style\s*>(.*?)<\s*/\s*style\s*>'is");
         // strip out preformatted tags
-        $this->remove_noise("'<\s*(?:code)[^>]*>(.*?)<\s*/\s*(?:code)\s*>'is");
+        $this->removeNoise("'<\s*(?:code)[^>]*>(.*?)<\s*/\s*(?:code)\s*>'is");
         // strip out server side scripts
-        $this->remove_noise("'(<\?)(.*?)(\?>)'s", true);
+        $this->removeNoise("'(<\?)(.*?)(\?>)'s", true);
         // strip smarty scripts
-        $this->remove_noise("'(\{\w)(.*?)(\})'s", true);
+        $this->removeNoise("'(\{\w)(.*?)(\})'s", true);
 
         // parsing
         while ($this->parse());
         // end
         $this->root->_[Constants::HDOM_INFO_END] = $this->cursor;
-        $this->parse_charset();
+        $this->parseCharset();
 
         // make load function chainable
         return $this;
@@ -187,8 +183,13 @@ class SimpleHtmlDom
     }
 
     // prepare HTML data and init everything
-    protected function prepare($str, $lowercase = true, $stripRN = true, $defaultBRText = Constants::DEFAULT_BR_TEXT, $defaultSpanText = Constants::DEFAULT_SPAN_TEXT)
-    {
+    private function prepare(
+        string $str,
+        bool $lowercase = true,
+        bool $stripRN = true,
+        string $defaultBRText = Constants::DEFAULT_BR_TEXT,
+        string $defaultSpanText = Constants::DEFAULT_SPAN_TEXT
+    ): void {
         $this->clear();
 
         // set the length of content before we do anything to it.
@@ -224,24 +225,24 @@ class SimpleHtmlDom
     }
 
     // parse html content
-    protected function parse()
+    private function parse()
     {
-        if (($s = $this->copy_until_char('<')) === '') {
-            return $this->read_tag();
+        if (($s = $this->copyUntilChar('<')) === '') {
+            return $this->readTag();
         }
 
         // text
         $node = new SimpleHtmlDomNode($this);
         ++$this->cursor;
         $node->_[Constants::HDOM_INFO_TEXT] = $s;
-        $this->link_nodes($node, false);
+        $this->linkNodes($node, false);
         return true;
     }
 
     // PAPERG - dkchou - added this to try to identify the character set of the page we have just parsed so we know better how to spit it out later.
     // NOTE:  IF you provide a routine called get_last_retrieve_url_contents_content_type which returns the CURLINFO_CONTENT_TYPE from the last curl_exec
     // (or the content_type header from the last transfer), we will parse THAT, and if a charset is specified, we will use it over any other mechanism.
-    protected function parse_charset()
+    private function parseCharset()
     {
         global $debugObject;
 
@@ -314,7 +315,7 @@ class SimpleHtmlDom
     }
 
     // read tag info
-    protected function read_tag()
+    private function readTag()
     {
         if ($this->char !== '<') {
             $this->root->_[Constants::HDOM_INFO_END] = $this->cursor;
@@ -329,7 +330,7 @@ class SimpleHtmlDom
             // This represents the change in the simple_html_dom trunk from revision 180 to 181.
             // $this->skip($this->token_blank_t);
             $this->skip($this->token_blank);
-            $tag = $this->copy_until_char('>');
+            $tag = $this->copyUntilChar('>');
 
             // skip attributes in end tag
             if (($pos = strpos($tag, ' ')) !== false) {
@@ -354,7 +355,7 @@ class SimpleHtmlDom
                             $this->parent = $this->parent->parent;
                         }
                         $this->parent->_[Constants::HDOM_INFO_END] = $this->cursor;
-                        return $this->as_text_node($tag);
+                        return $this->asTextNode($tag);
                     }
                 } else if (($this->parent->parent) && isset($this->block_tags[$tag_lower])) {
                     $this->parent->_[Constants::HDOM_INFO_END] = 0;
@@ -367,13 +368,13 @@ class SimpleHtmlDom
                     if (strtolower($this->parent->tag) !== $tag_lower) {
                         $this->parent = $org_parent; // restore origonal parent
                         $this->parent->_[Constants::HDOM_INFO_END] = $this->cursor;
-                        return $this->as_text_node($tag);
+                        return $this->asTextNode($tag);
                     }
                 } else if (($this->parent->parent) && strtolower($this->parent->parent->tag) === $tag_lower) {
                     $this->parent->_[Constants::HDOM_INFO_END] = 0;
                     $this->parent = $this->parent->parent;
                 } else {
-                    return $this->as_text_node($tag);
+                    return $this->asTextNode($tag);
                 }
             }
 
@@ -389,12 +390,12 @@ class SimpleHtmlDom
         $node = new SimpleHtmlDomNode($this);
         $node->_[Constants::HDOM_INFO_BEGIN] = $this->cursor;
         ++$this->cursor;
-        $tag = $this->copy_until($this->token_slash);
+        $tag = $this->copyUntil($this->token_slash);
         $node->tag_start = $begin_tag_pos;
 
         // doctype, cdata & comments...
         if (isset($tag[0]) && $tag[0] === '!') {
-            $node->_[Constants::HDOM_INFO_TEXT] = '<' . $tag . $this->copy_until_char('>');
+            $node->_[Constants::HDOM_INFO_TEXT] = '<' . $tag . $this->copyUntilChar('>');
 
             if (isset($tag[2]) && $tag[1] === '-' && $tag[2] === '-') {
                 $node->nodetype = Constants::HDOM_TYPE_COMMENT;
@@ -406,7 +407,7 @@ class SimpleHtmlDom
             if ($this->char === '>') {
                 $node->_[Constants::HDOM_INFO_TEXT] .= '>';
             }
-            $this->link_nodes($node, true);
+            $this->linkNodes($node, true);
             $this->char = (++$this->pos < $this->size) ? $this->doc[$this->pos] : null; // next
             return true;
         }
@@ -415,22 +416,22 @@ class SimpleHtmlDom
         if ($pos = strpos($tag, '<') !== false) {
             $tag = '<' . substr($tag, 0, -1);
             $node->_[Constants::HDOM_INFO_TEXT] = $tag;
-            $this->link_nodes($node, false);
+            $this->linkNodes($node, false);
             $this->char = $this->doc[--$this->pos]; // prev
             return true;
         }
 
         if (!preg_match("/^[\w\-:]+$/", $tag)) {
-            $node->_[Constants::HDOM_INFO_TEXT] = '<' . $tag . $this->copy_until('<>');
+            $node->_[Constants::HDOM_INFO_TEXT] = '<' . $tag . $this->copyUntil('<>');
             if ($this->char === '<') {
-                $this->link_nodes($node, false);
+                $this->linkNodes($node, false);
                 return true;
             }
 
             if ($this->char === '>') {
                 $node->_[Constants::HDOM_INFO_TEXT] .= '>';
             }
-            $this->link_nodes($node, false);
+            $this->linkNodes($node, false);
             $this->char = (++$this->pos < $this->size) ? $this->doc[$this->pos] : null; // next
             return true;
         }
@@ -450,14 +451,14 @@ class SimpleHtmlDom
         }
 
         $guard = 0; // prevent infinity loop
-        $space = array($this->copy_skip($this->token_blank), '', '');
+        $space = array($this->copySkip($this->token_blank), '', '');
 
         // attributes
         do {
             if ($this->char !== null && $space[0] === '') {
                 break;
             }
-            $name = $this->copy_until($this->token_equal);
+            $name = $this->copyUntil($this->token_equal);
             if ($guard === $this->pos) {
                 $this->char = (++$this->pos < $this->size) ? $this->doc[$this->pos] : null; // next
                 continue;
@@ -470,7 +471,7 @@ class SimpleHtmlDom
                 $node->_[Constants::HDOM_INFO_END] = 0;
                 $node->_[Constants::HDOM_INFO_TEXT] = '<' . $tag . $space[0] . $name;
                 $node->tag = 'text';
-                $this->link_nodes($node, false);
+                $this->linkNodes($node, false);
                 return true;
             }
 
@@ -483,19 +484,19 @@ class SimpleHtmlDom
                 $node->_[Constants::HDOM_INFO_TEXT] = substr($this->doc, $begin_tag_pos, $this->pos - $begin_tag_pos - 1);
                 $this->pos -= 2;
                 $this->char = (++$this->pos < $this->size) ? $this->doc[$this->pos] : null; // next
-                $this->link_nodes($node, false);
+                $this->linkNodes($node, false);
                 return true;
             }
 
             if ($name !== '/' && $name !== '') {
-                $space[1] = $this->copy_skip($this->token_blank);
+                $space[1] = $this->copySkip($this->token_blank);
                 $name = $this->restore_noise($name);
                 if ($this->lowercase) {
                     $name = strtolower($name);
                 }
                 if ($this->char === '=') {
                     $this->char = (++$this->pos < $this->size) ? $this->doc[$this->pos] : null; // next
-                    $this->parse_attr($node, $name, $space);
+                    $this->parseAttributes($node, $name, $space);
                 } else {
                     //no value attr: nowrap, checked selected...
                     $node->_[Constants::HDOM_INFO_QUOTE][] = Constants::HDOM_QUOTE_NO;
@@ -505,17 +506,17 @@ class SimpleHtmlDom
                     }
                 }
                 $node->_[Constants::HDOM_INFO_SPACE][] = $space;
-                $space = array($this->copy_skip($this->token_blank), '', '');
+                $space = array($this->copySkip($this->token_blank), '', '');
             } else {
                 break;
             }
         } while ($this->char !== '>' && $this->char !== '/');
 
-        $this->link_nodes($node, true);
+        $this->linkNodes($node, true);
         $node->_[Constants::HDOM_INFO_ENDSPACE] = $space[0];
 
         // check self closing
-        if ($this->copy_until_char_escape('>') === '/') {
+        if ($this->copyUntilCharEscape('>') === '/') {
             $node->_[Constants::HDOM_INFO_ENDSPACE] .= '/';
             $node->_[Constants::HDOM_INFO_END] = 0;
         } else {
@@ -537,7 +538,7 @@ class SimpleHtmlDom
     }
 
     // parse attributes
-    protected function parse_attr($node, $name, &$space)
+    private function parseAttributes($node, $name, &$space)
     {
         // Per sourceforge: http://sourceforge.net/tracker/?func=detail&aid=3061408&group_id=218559&atid=1044037
         // If the attribute is already defined inside a tag, only pay atetntion to the first one as opposed to the last one.
@@ -545,23 +546,23 @@ class SimpleHtmlDom
             return;
         }
 
-        $space[2] = $this->copy_skip($this->token_blank);
+        $space[2] = $this->copySkip($this->token_blank);
         switch ($this->char) {
             case '"':
                 $node->_[Constants::HDOM_INFO_QUOTE][] = Constants::HDOM_QUOTE_DOUBLE;
                 $this->char = (++$this->pos < $this->size) ? $this->doc[$this->pos] : null; // next
-                $node->attr[$name] = $this->restore_noise($this->copy_until_char_escape('"'));
+                $node->attr[$name] = $this->restore_noise($this->copyUntilCharEscape('"'));
                 $this->char = (++$this->pos < $this->size) ? $this->doc[$this->pos] : null; // next
                 break;
             case '\'':
                 $node->_[Constants::HDOM_INFO_QUOTE][] = Constants::HDOM_QUOTE_SINGLE;
                 $this->char = (++$this->pos < $this->size) ? $this->doc[$this->pos] : null; // next
-                $node->attr[$name] = $this->restore_noise($this->copy_until_char_escape('\''));
+                $node->attr[$name] = $this->restore_noise($this->copyUntilCharEscape('\''));
                 $this->char = (++$this->pos < $this->size) ? $this->doc[$this->pos] : null; // next
                 break;
             default:
                 $node->_[Constants::HDOM_INFO_QUOTE][] = Constants::HDOM_QUOTE_NO;
-                $node->attr[$name] = $this->restore_noise($this->copy_until($this->token_attr));
+                $node->attr[$name] = $this->restore_noise($this->copyUntil($this->token_attr));
         }
         // PaperG: Attributes should not have \r or \n in them, that counts as html whitespace.
         $node->attr[$name] = str_replace("\r", "", $node->attr[$name]);
@@ -573,7 +574,7 @@ class SimpleHtmlDom
     }
 
     // link node's parent
-    protected function link_nodes(&$node, $is_child)
+    private function linkNodes(&$node, $is_child)
     {
         $node->parent = $this->parent;
         $this->parent->nodes[] = $node;
@@ -583,23 +584,23 @@ class SimpleHtmlDom
     }
 
     // as a text node
-    protected function as_text_node($tag)
+    private function asTextNode($tag)
     {
         $node = new SimpleHtmlDomNode($this);
         ++$this->cursor;
         $node->_[Constants::HDOM_INFO_TEXT] = '</' . $tag . '>';
-        $this->link_nodes($node, false);
+        $this->linkNodes($node, false);
         $this->char = (++$this->pos < $this->size) ? $this->doc[$this->pos] : null; // next
         return true;
     }
 
-    protected function skip($chars)
+    private function skip($chars)
     {
         $this->pos += strspn($this->doc, $chars, $this->pos);
         $this->char = ($this->pos < $this->size) ? $this->doc[$this->pos] : null; // next
     }
 
-    protected function copy_skip($chars)
+    private function copySkip($chars)
     {
         $pos = $this->pos;
         $len = strspn($this->doc, $chars, $pos);
@@ -611,7 +612,7 @@ class SimpleHtmlDom
         return substr($this->doc, $pos, $len);
     }
 
-    protected function copy_until($chars)
+    private function copyUntil($chars)
     {
         $pos = $this->pos;
         $len = strcspn($this->doc, $chars, $pos);
@@ -620,7 +621,7 @@ class SimpleHtmlDom
         return substr($this->doc, $pos, $len);
     }
 
-    protected function copy_until_char($char)
+    private function copyUntilChar($char)
     {
         if ($this->char === null) {
             return '';
@@ -642,7 +643,7 @@ class SimpleHtmlDom
         return substr($this->doc, $pos_old, $pos - $pos_old);
     }
 
-    protected function copy_until_char_escape($char)
+    private function copyUntilCharEscape($char)
     {
         if ($this->char === null) {
             return '';
@@ -675,7 +676,7 @@ class SimpleHtmlDom
 
     // remove noise from html content
     // save the noise in the $this->noise array.
-    protected function remove_noise($pattern, $remove_tag = false)
+    private function removeNoise($pattern, $remove_tag = false)
     {
         global $debugObject;
         if (is_object($debugObject)) {
@@ -702,7 +703,7 @@ class SimpleHtmlDom
     }
 
     // restore noise to html content
-    function restore_noise($text)
+    public function restore_noise($text)
     {
         global $debugObject;
         if (is_object($debugObject)) {
@@ -771,11 +772,11 @@ class SimpleHtmlDom
     {
         return $this->root->childNodes($idx);
     }
-    function firstChild()
+    public function firstChild()
     {
         return $this->root->first_child();
     }
-    function lastChild()
+    public function lastChild()
     {
         return $this->root->last_child();
     }
@@ -791,15 +792,15 @@ class SimpleHtmlDom
     {
         return $this->find("#$id", 0);
     }
-    function getElementsById($id, $idx = null)
+    public function getElementsById($id, $idx = null)
     {
         return $this->find("#$id", $idx);
     }
-    function getElementByTagName($name)
+    public function getElementByTagName($name)
     {
         return $this->find($name, 0);
     }
-    function getElementsByTagName($name, $idx = -1)
+    public function getElementsByTagName($name, $idx = -1)
     {
         return $this->find($name, $idx);
     }

@@ -43,6 +43,4 @@ class Constants
     public const DEFAULT_BR_TEXT = "\r\n";
 
     public const DEFAULT_SPAN_TEXT = " ";
-
-    public const MAX_FILE_SIZE = 600000;
 }
