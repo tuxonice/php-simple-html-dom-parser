@@ -1,6 +1,6 @@
 <?php
 
-namespace PhpSimple;
+namespace Tlab\HtmlDomParser;
 
 /**
  * simple html dom node

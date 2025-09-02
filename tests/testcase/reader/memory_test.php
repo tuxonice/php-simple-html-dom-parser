@@ -1,7 +1,7 @@
 <?php
 // $Rev: 130 $
 // -----------------------------------------------------------------------------
-use PhpSimple\Constants;
+use Tlab\HtmlDomParser\Constants;
 
 error_reporting(E_ALL);
 

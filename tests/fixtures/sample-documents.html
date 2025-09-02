@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Document with Various Elements</title>
+    <style>
+        .highlight { background-color: yellow; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <!-- Main content area -->
+    <header id="main-header" class="site-header">
+        <h1>Sample Document</h1>
+        <nav>
+            <ul class="nav-list">
+                <li><a href="#section1" data-section="1">Section 1</a></li>
+                <li><a href="#section2" data-section="2">Section 2</a></li>
+                <li><a href="#section3" data-section="3">Section 3</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="section1" class="content-section">
+            <h2>Forms and Inputs</h2>
+            <form id="test-form" method="post" action="/submit">
+                <div class="form-group">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" placeholder="user@example.com">
+                </div>
+                <div class="form-group">
+                    <label for="country">Country:</label>
+                    <select id="country" name="country">
+                        <option value="">Select a country</option>
+                        <option value="us">United States</option>
+                        <option value="ca">Canada</option>
+                        <option value="uk">United Kingdom</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <input type="checkbox" id="newsletter" name="newsletter" checked>
+                    <label for="newsletter">Subscribe to newsletter</label>
+                </div>
+                <button type="submit">Submit</button>
+            </form>
+        </section>
+
+        <section id="section2" class="content-section highlight">
+            <h2>Media and Images</h2>
+            <div class="media-container">
+                <img src="image1.jpg" alt="Sample Image 1" class="responsive-image" width="300" height="200">
+                <img src="image2.png" alt="Sample Image 2" class="responsive-image" />
+                <video controls width="400">
+                    <source src="video.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        </section>
+
+        <section id="section3" class="content-section">
+            <h2>Tables and Lists</h2>
+            <table id="data-table" class="styled-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Age</th>
+                        <th>City</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr data-id="1">
+                        <td>John Doe</td>
+                        <td>30</td>
+                        <td>New York</td>
+                    </tr>
+                    <tr data-id="2">
+                        <td>Jane Smith</td>
+                        <td>25</td>
+                        <td>Los Angeles</td>
+                    </tr>
+                    <tr data-id="3" class="hidden">
+                        <td>Bob Johnson</td>
+                        <td>35</td>
+                        <td>Chicago</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <ul class="feature-list">
+                <li class="feature-item" data-priority="high">High priority feature</li>
+                <li class="feature-item" data-priority="medium">Medium priority feature</li>
+                <li class="feature-item" data-priority="low">Low priority feature</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <p>&copy; 2024 Test Document. All rights reserved.</p>
+        <div class="social-links">
+            <a href="https://twitter.com/example" target="_blank" rel="noopener">Twitter</a>
+            <a href="https://facebook.com/example" target="_blank" rel="noopener">Facebook</a>
+        </div>
+    </footer>
+
+    <!-- Script tags for testing -->
+    <script type="text/javascript">
+        console.log('This script should be stripped during parsing');
+        var data = { test: 'value' };
+    </script>
+</body>
+</html>

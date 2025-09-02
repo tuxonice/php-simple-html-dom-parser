@@ -2,7 +2,7 @@
 
 ### Get HTML elements
 
-```
+```php
 // Create DOM from URL or file
 $html = file_get_html('http://www.google.com/');
 
@@ -17,7 +17,7 @@ echo $element->href . '<br>';
 
 ### Modify HTML elements
 
-```
+```php
 // Create DOM from string
 $html = str_get_html('<div id="hello">Hello</div><div id="world">World</div>');
 
@@ -30,14 +30,14 @@ echo $html; // Output: <div id="hello">foo</div><div id="world" class="bar">Worl
 
 ### Extract contents from HTML
 
-```
+```php
 // Dump contents (without tags) from HTML
 echo file_get_html('http://www.google.com/')->plaintext; 
 ```
 
 ### Scraping Slashdot!
 
-```
+```php
 // Create DOM from URL
 $html = file_get_html('http://slashdot.org/');
 
@@ -56,7 +56,7 @@ print_r($articles);
 
 ### Quick way
 
-```
+```php
 
 // Create a DOM object from a string
 $html = str_get_html('<html><body>Hello!</body></html>');
@@ -70,7 +70,7 @@ $html = file_get_html('test.htm');
 
 ### Object-oriented way
 
-```
+```php
 // Create a DOM object
 $html = new simple_html_dom();
 
@@ -88,7 +88,7 @@ $html->load_file('test.htm');
 
 ### Basics
 
-```
+```php
 // Find all anchors, returns a array of element objects
 $ret = $html->find('a');
 
@@ -107,7 +107,7 @@ $ret = $html->find('div[id=foo]');
 
 ### Advanced
 
-```
+```php
 // Find all element which id=foo
 $ret = $html->find('#foo');
 
@@ -126,7 +126,7 @@ $ret = $html->find('a[title], img[title]');
 
 ### Descendant selectors
 
-```
+```php
 // Find all <li> in <ul>
 $es = $html->find('ul li');
 
@@ -142,7 +142,7 @@ $es = $html->find(''table td[align=center]');
 
 ### Nested selectors
 
-```
+```php
 // Find all <li> in <ul>
 foreach($html->find('ul') as $ul)
 {
@@ -172,7 +172,7 @@ Supports these operators in attribute selectors:
 
 ### Text and Comments
 
-```
+```php
 // Find all text blocks
 $es = $html->find('text');
 
@@ -183,7 +183,7 @@ $es = $html->find('comment');
 
 ### Get, Set and Remove attributes
 
-```
+```php
 // Get a attribute ( If the attribute is non-value attribute (eg. checked, selected...), it will returns true or false)
 $value = $e->href;
 
@@ -200,7 +200,7 @@ echo 'href exist!';
 
 ### Magic attributes
 
-```
+```php
 // Example
 $html = str_get_html("<div>foo <b>bar</b></div>");
 $e = $html->find("div", 0);
@@ -222,7 +222,7 @@ echo $e->plaintext; // Returns: " foo bar"
 
 ### Tips
 
-```
+```php
 // Extract contents from HTML
 echo $html->plaintext;
 
@@ -243,7 +243,7 @@ $e->outertext = '<div>foo<div>' . $e->outertext;
 
 ### Background Knowledge
 
-```
+```php
 // If you are not so familiar with HTML DOM, check this link to learn more...
 
 // Example
@@ -269,7 +269,7 @@ You can also call methods with Camel naming convertions.
 
 ### Quick way
 
-```
+```php
 // Dumps the internal DOM tree back into string
 $str = $html;
 
@@ -279,7 +279,7 @@ echo $html;
 
 ### Object-oriented way
 
-```
+```php
 // Dumps the internal DOM tree back into string
 $str = $html->save();
 
@@ -291,7 +291,7 @@ $html->save('result.htm');
 
 ### Callback function
 
-```
+```php
 // Write a function with parameter "$element"
 function my_callback($element) {
 // Hide all <b> tags

@@ -1,5 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" backupGlobals="false" backupStaticAttributes="false" bootstrap="phpunit.php" colors="true" convertErrorsToExceptions="true" convertNoticesToExceptions="true" convertWarningsToExceptions="true" processIsolation="false" stopOnFailure="false" beStrictAboutChangesToGlobalState="true" beStrictAboutTestsThatDoNotTestAnything="true" executionOrder="random" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd">
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+         backupGlobals="false" 
+         backupStaticAttributes="false" 
+         bootstrap="phpunit.php" 
+         colors="true" 
+         convertErrorsToExceptions="true" 
+         convertNoticesToExceptions="true" 
+         convertWarningsToExceptions="true" 
+         processIsolation="false" 
+         stopOnFailure="false" 
+         beStrictAboutChangesToGlobalState="true" 
+         beStrictAboutTestsThatDoNotTestAnything="true" 
+         executionOrder="random" 
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd">
+  
   <coverage includeUncoveredFiles="false">
     <include>
       <directory suffix=".php">src</directory>
@@ -8,9 +22,21 @@
       <directory suffix=".php">vendor</directory>
     </exclude>
   </coverage>
+  
   <testsuites>
-    <testsuite name="Repository Test Suite">
-      <directory>./tests/</directory>
+    <testsuite name="Unit Tests">
+      <directory>./tests/Unit/</directory>
     </testsuite>
   </testsuites>
+  
+  <groups>
+    <exclude>
+      <group>performance</group>
+    </exclude>
+  </groups>
+  
+  <php>
+    <ini name="memory_limit" value="256M"/>
+    <ini name="error_reporting" value="E_ALL"/>
+  </php>
 </phpunit>

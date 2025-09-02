@@ -1,6 +1,12 @@
-#$Rev: 194 $
-[Updates - add some ability to insert and create nodes.]
-[1: add ability to search the "noise" array]
+[PHP Simple HTML DOM Parser v2.0 is released]
+This document outlines the significant changes made in this fork compared to the
+original [sunra/php-simple-html-dom-parser](https://github.com/sunra/php-simple-html-dom-parser) repository.
+1. Updated PHP requirement to PHP 8.1+
+2. Changed namespace from `Sunra\PhpSimple\HtmlDomParser` to `Tlab\HtmlDomParser`
+3. Improved code quality and fixed various bugs
+4. Added proper type hints and return types
+5. Updated coding standards to follow PSR-12
+
 
 [PHP Simple HTML Dom version 1.5 released.]
 1: Memory leak fixed!
@@ -9,7 +15,7 @@
 
 [On going]
 1. Error of "file_get_contents()" will be thrown as an exception.
-2. Add flag: LOCK_EX while calling "file_put_contents()". 
+2. Add flag: LOCK_EX while calling "file_put_contents()".
 3. Fix the typo of "token_blank_t".
 
 
@@ -67,7 +73,7 @@
 8. Fix the bug of text nodes' innertext.
 9. Fix the bug of comment nodes' innertext.
 10. Fix the bug of decendent selector with optional tags.
-11. Change simple_html_dom_node method name from "text()" to "makeup()". 
+11. Change simple_html_dom_node method name from "text()" to "makeup()".
 
 
 [PHP Simple HTML DOM Parser v0.97 is released]
@@ -91,7 +97,7 @@
 6. Fix the bug of self-closing tags in the end of file.
 7. Fix the bug of blanks in the end of tag.
 8. Add Reference section in manual.
-#. Fix some typo of testcase.
+   #. Fix some typo of testcase.
 
 
 [PHP Simple HTML DOM Parser v0.95 is released]
@@ -99,7 +105,7 @@
 2. Fix the bug of optional-closing tags.
 3. Fix the bug of parsing the line break next to the tag's name.
 4. Supports tag name with namespace.
-#. Refine structure of testcase.
+   #. Refine structure of testcase.
 
 
 [PHP Simple HTML DOM Parser v0.94 is released]

@@ -1,0 +1,17 @@
+# .gitattributes file for PHP Simple HTML DOM Parser
+# This file controls which files are excluded when your package is installed as a dependency via Composer
+# The "export-ignore" attribute prevents files/folders from being included in the distributed package
+
+# Exclude development and CI/CD files
+/tests export-ignore
+/.gitattributes export-ignore
+/.gitignore export-ignore
+/phpunit.xml export-ignore
+/phpcs.xml export-ignore
+/phpstan.neon export-ignore
+/Makefile export-ignore
+/docker-compose.yaml export-ignore
+/Dockerfile export-ignore
+
+# Exclude example files if they exist
+/documentation export-ignore

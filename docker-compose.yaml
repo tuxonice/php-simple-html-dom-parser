@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  php-test:
+    build: .
+    container_name: php-html-parser-test
+    volumes:
+      - .:/app
+      - vendor:/app/vendor
+    working_dir: /app
+    command: tail -f /dev/null
+    environment:
+      - COMPOSER_CACHE_DIR=/tmp/composer-cache
+    
+  test-runner:
+    build: .
+    container_name: php-html-parser-runner
+    volumes:
+      - .:/app
+      - vendor:/app/vendor
+    working_dir: /app
+    command: ./vendor/bin/phpunit --testdox
+    depends_on:
+      - php-test
+    environment:
+      - COMPOSER_CACHE_DIR=/tmp/composer-cache
+
+  security-tests:
+    build: .
+    container_name: php-html-parser-security
+    volumes:
+      - .:/app
+      - vendor:/app/vendor
+    working_dir: /app
+    command: ./vendor/bin/phpunit tests/Unit/SecurityTest.php --testdox
+    depends_on:
+      - php-test
+    environment:
+      - COMPOSER_CACHE_DIR=/tmp/composer-cache
+
+  performance-tests:
+    build: .
+    container_name: php-html-parser-performance
+    volumes:
+      - .:/app
+      - vendor:/app/vendor
+    working_dir: /app
+    command: ./vendor/bin/phpunit tests/Unit/PerformanceTest.php --group=performance
+    depends_on:
+      - php-test
+    environment:
+      - COMPOSER_CACHE_DIR=/tmp/composer-cache
+
+volumes:
+  vendor:

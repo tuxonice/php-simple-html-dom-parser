@@ -1,5 +1,4 @@
 .idea
 vendor/
-bin
-docker
-docker-compose.yml
+/.phpunit.result.cache
+/coverage/

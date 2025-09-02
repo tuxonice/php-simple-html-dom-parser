@@ -2,7 +2,7 @@
 
 namespace Unit;
 
-use PhpSimple\SimpleHtmlDom;
+use Tlab\HtmlDomParser\SimpleHtmlDom;
 use PHPUnit\Framework\TestCase;
 
 class ElementTestCaseTest extends TestCase
